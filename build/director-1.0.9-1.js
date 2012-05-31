@@ -1,7 +1,7 @@
 
 
 //
-// Generated on Wed Mar 07 2012 16:14:11 GMT-0600 (CST) by Nodejitsu, Inc (Using Codesurgeon).
+// Generated on Mon Mar 12 2012 15:40:06 GMT-0500 (CDT) by Nodejitsu, Inc (Using Codesurgeon).
 // Version 1.0.9-1
 //
 
@@ -256,336 +256,336 @@ Router.prototype.destroy = function () {
   listener.destroy(this.handler);
   return this;
 };function _every(arr, iterator) {
-  for (var i = 0; i < arr.length; i += 1) {
-    if (iterator(arr[i], i, arr) === false) {
-      return;
+    for (var i = 0; i < arr.length; i += 1) {
+        if (iterator(arr[i], i, arr) === false) {
+            return;
+        }
     }
-  }
 }
 
 function _flatten(arr) {
-  var flat = [];
-  for (var i = 0, n = arr.length; i < n; i++) {
-    flat = flat.concat(arr[i]);
-  }
-  return flat;
+    var flat = [];
+    for (var i = 0, n = arr.length; i < n; i++) {
+        flat = flat.concat(arr[i]);
+    }
+    return flat;
 }
 
 function _asyncEverySeries(arr, iterator, callback) {
-  if (!arr.length) {
-    return callback();
-  }
-  var completed = 0;
-  (function iterate() {
-    iterator(arr[completed], function(err) {
-      if (err || err === false) {
-        callback(err);
-        callback = function() {};
-      } else {
-        completed += 1;
-        if (completed === arr.length) {
-          callback();
-        } else {
-          iterate();
-        }
-      }
-    });
-  })();
+    if (!arr.length) {
+        return callback();
+    }
+    var completed = 0;
+    (function iterate() {
+        iterator(arr[completed], function(err) {
+            if (err || err === false) {
+                callback(err);
+                callback = function() {};
+            } else {
+                completed += 1;
+                if (completed === arr.length) {
+                    callback();
+                } else {
+                    iterate();
+                }
+            }
+        });
+    })();
 }
 
 function paramifyString(str, params, mod) {
-  mod = str;
-  for (var param in params) {
-    if (params.hasOwnProperty(param)) {
-      mod = params[param](str);
-      if (mod !== str) {
-        break;
-      }
+    mod = str;
+    for (var param in params) {
+        if (params.hasOwnProperty(param)) {
+            mod = params[param](str);
+            if (mod !== str) {
+                break;
+            }
+        }
     }
-  }
-  return mod === str ? "([._a-zA-Z0-9-]+)" : mod;
+    return mod === str ? "([._a-zA-Z0-9-]+)" : mod;
 }
 
 function regifyString(str, params) {
-  if (~str.indexOf("*")) {
-    str = str.replace(/\*/g, "([_.()!\\ %@&a-zA-Z0-9-]+)");
-  }
-  var captures = str.match(/:([^\/]+)/ig), length;
-  if (captures) {
-    length = captures.length;
-    for (var i = 0; i < length; i++) {
-      str = str.replace(captures[i], paramifyString(captures[i], params));
+    if (~str.indexOf("*")) {
+        str = str.replace(/\*/g, "([_.()!\\ %@&a-zA-Z0-9-]+)");
     }
-  }
-  return str;
+    var captures = str.match(/:([^\/]+)/ig), length;
+    if (captures) {
+        length = captures.length;
+        for (var i = 0; i < length; i++) {
+            str = str.replace(captures[i], paramifyString(captures[i], params));
+        }
+    }
+    return str;
 }
 
 Router.prototype.configure = function(options) {
-  options = options || {};
-  for (var i = 0; i < this.methods.length; i++) {
-    this._methods[this.methods[i]] = true;
-  }
-  this.recurse = options.recurse || this.recurse || false;
-  this.async = options.async || false;
-  this.delimiter = options.delimiter || "/";
-  this.strict = typeof options.strict === "undefined" ? true : options.strict;
-  this.notfound = options.notfound;
-  this.resource = options.resource;
-  this.every = {
-    after: options.after || null,
-    before: options.before || null,
-    on: options.on || null
-  };
-  return this;
+    options = options || {};
+    for (var i = 0; i < this.methods.length; i++) {
+        this._methods[this.methods[i]] = true;
+    }
+    this.recurse = options.recurse || this.recurse || false;
+    this.async = options.async || false;
+    this.delimiter = options.delimiter || "/";
+    this.strict = typeof options.strict === "undefined" ? true : options.strict;
+    this.notfound = options.notfound;
+    this.resource = options.resource;
+    this.every = {
+        after: options.after || null,
+        before: options.before || null,
+        on: options.on || null
+    };
+    return this;
 };
 
 Router.prototype.param = function(token, matcher) {
-  if (token[0] !== ":") {
-    token = ":" + token;
-  }
-  var compiled = new RegExp(token, "g");
-  this.params[token] = function(str) {
-    return str.replace(compiled, matcher.source || matcher);
-  };
+    if (token[0] !== ":") {
+        token = ":" + token;
+    }
+    var compiled = new RegExp(token, "g");
+    this.params[token] = function(str) {
+        return str.replace(compiled, matcher.source || matcher);
+    };
 };
 
 Router.prototype.on = Router.prototype.route = function(method, path, route) {
-  var self = this;
-  if (!route && typeof path == "function") {
-    route = path;
-    path = method;
-    method = "on";
-  }
-  if (path.source) {
-    path = path.source.replace(/\\\//ig, "/");
-  }
-  if (Array.isArray(method)) {
-    return method.forEach(function(m) {
-      self.on(m.toLowerCase(), path, route);
-    });
-  }
-  this.insert(method, path.split(new RegExp(this.delimiter)), route);
+    var self = this;
+    if (!route && typeof path == "function") {
+        route = path;
+        path = method;
+        method = "on";
+    }
+    if (path.source) {
+        path = path.source.replace(/\\\//ig, "/");
+    }
+    if (Array.isArray(method)) {
+        return method.forEach(function(m) {
+            self.on(m.toLowerCase(), path, route);
+        });
+    }
+    this.insert(method, path.split(new RegExp(this.delimiter)), route);
 };
 
 Router.prototype.dispatch = function(method, path, callback) {
-  var self = this, fns = this.traverse(method, path, this.routes, ""), invoked = this._invoked, after;
-  this._invoked = true;
-  if (!fns || fns.length === 0) {
-    this.last = [];
-    if (typeof this.notfound === "function") {
-      this.invoke([ this.notfound ], {
-        method: method,
-        path: path
-      }, callback);
+    var self = this, fns = this.traverse(method, path, this.routes, ""), invoked = this._invoked, after;
+    this._invoked = true;
+    if (!fns || fns.length === 0) {
+        this.last = [];
+        if (typeof this.notfound === "function") {
+            this.invoke([ this.notfound ], {
+                method: method,
+                path: path
+            }, callback);
+        }
+        return false;
     }
-    return false;
-  }
-  if (this.recurse === "forward") {
-    fns = fns.reverse();
-  }
-  function updateAndInvoke() {
-    self.last = fns.after;
-    self.invoke(self.runlist(fns), self, callback);
-  }
-  after = this.every && this.every.after ? [ this.every.after ].concat(this.last) : [ this.last ];
-  if (after && after.length > 0 && invoked) {
-    if (this.async) {
-      this.invoke(after, this, updateAndInvoke);
-    } else {
-      this.invoke(after, this);
-      updateAndInvoke();
+    if (this.recurse === "forward") {
+        fns = fns.reverse();
     }
+    function updateAndInvoke() {
+        self.last = fns.after;
+        self.invoke(self.runlist(fns), self, callback);
+    }
+    after = this.every && this.every.after ? [ this.every.after ].concat(this.last) : [ this.last ];
+    if (after && after.length > 0 && invoked) {
+        if (this.async) {
+            this.invoke(after, this, updateAndInvoke);
+        } else {
+            this.invoke(after, this);
+            updateAndInvoke();
+        }
+        return true;
+    }
+    updateAndInvoke();
     return true;
-  }
-  updateAndInvoke();
-  return true;
 };
 
 Router.prototype.invoke = function(fns, thisArg, callback) {
-  var self = this;
-  if (this.async) {
-    _asyncEverySeries(fns, function apply(fn, next) {
-      if (Array.isArray(fn)) {
-        return _asyncEverySeries(fn, apply, next);
-      } else if (typeof fn == "function") {
-        fn.apply(thisArg, fns.captures.concat(next));
-      }
-    }, function() {
-      if (callback) {
-        callback.apply(thisArg, arguments);
-      }
-    });
-  } else {
-    _every(fns, function apply(fn) {
-      if (Array.isArray(fn)) {
-        return _every(fn, apply);
-      } else if (typeof fn === "function") {
-        return fn.apply(thisArg, fns.captures || null);
-      } else if (typeof fn === "string" && self.resource) {
-        self.resource[fn].apply(thisArg, fns.captures || null);
-      }
-    });
-  }
+    var self = this;
+    if (this.async) {
+        _asyncEverySeries(fns, function apply(fn, next) {
+            if (Array.isArray(fn)) {
+                return _asyncEverySeries(fn, apply, next);
+            } else if (typeof fn == "function") {
+                fn.apply(thisArg, fns.captures.concat(next));
+            }
+        }, function() {
+            if (callback) {
+                callback.apply(thisArg, arguments);
+            }
+        });
+    } else {
+        _every(fns, function apply(fn) {
+            if (Array.isArray(fn)) {
+                return _every(fn, apply);
+            } else if (typeof fn === "function") {
+                return fn.apply(thisArg, fns.captures || null);
+            } else if (typeof fn === "string" && self.resource) {
+                self.resource[fn].apply(thisArg, fns.captures || null);
+            }
+        });
+    }
 };
 
 Router.prototype.traverse = function(method, path, routes, regexp) {
-  var fns = [], current, exact, match, next, that;
-  if (path === this.delimiter && routes[method]) {
-    next = [ [ routes.before, routes[method] ].filter(Boolean) ];
-    next.after = [ routes.after ].filter(Boolean);
-    next.matched = true;
-    next.captures = [];
-    return next;
-  }
-  for (var r in routes) {
-    if (routes.hasOwnProperty(r) && (!this._methods[r] || this._methods[r] && typeof routes[r] === "object" && !Array.isArray(routes[r]))) {
-      current = exact = regexp + this.delimiter + r;
-      if (!this.strict) {
-        exact += "[" + this.delimiter + "]?";
-      }
-      match = path.match(new RegExp("^" + exact));
-      if (!match) {
-        continue;
-      }
-      if (match[0] && match[0] == path && routes[r][method]) {
-        next = [ [ routes[r].before, routes[r][method] ].filter(Boolean) ];
-        next.after = [ routes[r].after ].filter(Boolean);
+    var fns = [], current, exact, match, next, that;
+    if (path === this.delimiter && routes[method]) {
+        next = [ [ routes.before, routes[method] ].filter(Boolean) ];
+        next.after = [ routes.after ].filter(Boolean);
         next.matched = true;
-        next.captures = match.slice(1);
-        if (this.recurse && routes === this.routes) {
-          next.push([ routes["before"], routes["on"] ].filter(Boolean));
-          next.after = next.after.concat([ routes["after"] ].filter(Boolean));
-        }
+        next.captures = [];
         return next;
-      }
-      next = this.traverse(method, path, routes[r], current);
-      if (next.matched) {
-        if (next.length > 0) {
-          fns = fns.concat(next);
-        }
-        if (this.recurse) {
-          fns.push([ routes[r].before, routes[r].on ].filter(Boolean));
-          next.after = next.after.concat([ routes[r].after ].filter(Boolean));
-          if (routes === this.routes) {
-            fns.push([ routes["before"], routes["on"] ].filter(Boolean));
-            next.after = next.after.concat([ routes["after"] ].filter(Boolean));
-          }
-        }
-        fns.matched = true;
-        fns.captures = next.captures;
-        fns.after = next.after;
-        return fns;
-      }
     }
-  }
-  return false;
+    for (var r in routes) {
+        if (routes.hasOwnProperty(r) && (!this._methods[r] || this._methods[r] && typeof routes[r] === "object" && !Array.isArray(routes[r]))) {
+            current = exact = regexp + this.delimiter + r;
+            if (!this.strict) {
+                exact += "[" + this.delimiter + "]?";
+            }
+            match = path.match(new RegExp("^" + exact));
+            if (!match) {
+                continue;
+            }
+            if (match[0] && match[0] == path && routes[r][method]) {
+                next = [ [ routes[r].before, routes[r][method] ].filter(Boolean) ];
+                next.after = [ routes[r].after ].filter(Boolean);
+                next.matched = true;
+                next.captures = match.slice(1);
+                if (this.recurse && routes === this.routes) {
+                    next.push([ routes["before"], routes["on"] ].filter(Boolean));
+                    next.after = next.after.concat([ routes["after"] ].filter(Boolean));
+                }
+                return next;
+            }
+            next = this.traverse(method, path, routes[r], current);
+            if (next.matched) {
+                if (next.length > 0) {
+                    fns = fns.concat(next);
+                }
+                if (this.recurse) {
+                    fns.push([ routes[r].before, routes[r].on ].filter(Boolean));
+                    next.after = next.after.concat([ routes[r].after ].filter(Boolean));
+                    if (routes === this.routes) {
+                        fns.push([ routes["before"], routes["on"] ].filter(Boolean));
+                        next.after = next.after.concat([ routes["after"] ].filter(Boolean));
+                    }
+                }
+                fns.matched = true;
+                fns.captures = next.captures;
+                fns.after = next.after;
+                return fns;
+            }
+        }
+    }
+    return false;
 };
 
 Router.prototype.insert = function(method, path, route, parent) {
-  var methodType, parentType, isArray, nested, part;
-  path = path.filter(function(p) {
-    return p && p.length > 0;
-  });
-  parent = parent || this.routes;
-  part = path.shift();
-  if (/\:|\*/.test(part) && !/\\d|\\w/.test(part)) {
-    part = regifyString(part, this.params);
-  }
-  if (path.length > 0) {
-    parent[part] = parent[part] || {};
-    return this.insert(method, path, route, parent[part]);
-  }
-  if (!part && !path.length && parent === this.routes) {
-    methodType = typeof parent[method];
-    switch (methodType) {
-     case "function":
-      parent[method] = [ parent[method], route ];
-      return;
-     case "object":
-      parent[method].push(route);
-      return;
-     case "undefined":
-      parent[method] = route;
-      return;
+    var methodType, parentType, isArray, nested, part;
+    path = path.filter(function(p) {
+        return p && p.length > 0;
+    });
+    parent = parent || this.routes;
+    part = path.shift();
+    if (/\:|\*/.test(part) && !/\\d|\\w/.test(part)) {
+        part = regifyString(part, this.params);
     }
-    return;
-  }
-  parentType = typeof parent[part];
-  isArray = Array.isArray(parent[part]);
-  if (parent[part] && !isArray && parentType == "object") {
-    methodType = typeof parent[part][method];
-    switch (methodType) {
-     case "function":
-      parent[part][method] = [ parent[part][method], route ];
-      return;
-     case "object":
-      parent[part][method].push(route);
-      return;
-     case "undefined":
-      parent[part][method] = route;
-      return;
+    if (path.length > 0) {
+        parent[part] = parent[part] || {};
+        return this.insert(method, path, route, parent[part]);
     }
-  } else if (parentType == "undefined") {
-    nested = {};
-    nested[method] = route;
-    parent[part] = nested;
-    return;
-  }
-  throw new Error("Invalid route context: " + parentType);
+    if (!part && !path.length && parent === this.routes) {
+        methodType = typeof parent[method];
+        switch (methodType) {
+          case "function":
+            parent[method] = [ parent[method], route ];
+            return;
+          case "object":
+            parent[method].push(route);
+            return;
+          case "undefined":
+            parent[method] = route;
+            return;
+        }
+        return;
+    }
+    parentType = typeof parent[part];
+    isArray = Array.isArray(parent[part]);
+    if (parent[part] && !isArray && parentType == "object") {
+        methodType = typeof parent[part][method];
+        switch (methodType) {
+          case "function":
+            parent[part][method] = [ parent[part][method], route ];
+            return;
+          case "object":
+            parent[part][method].push(route);
+            return;
+          case "undefined":
+            parent[part][method] = route;
+            return;
+        }
+    } else if (parentType == "undefined") {
+        nested = {};
+        nested[method] = route;
+        parent[part] = nested;
+        return;
+    }
+    throw new Error("Invalid route context: " + parentType);
 };
 
 
 
 Router.prototype.extend = function(methods) {
-  var self = this, len = methods.length, i;
-  for (i = 0; i < len; i++) {
-    (function(method) {
-      self._methods[method] = true;
-      self[method] = function() {
-        var extra = arguments.length === 1 ? [ method, "" ] : [ method ];
-        self.on.apply(self, extra.concat(Array.prototype.slice.call(arguments)));
-      };
-    })(methods[i]);
-  }
+    var self = this, len = methods.length, i;
+    for (i = 0; i < len; i++) {
+        (function(method) {
+            self._methods[method] = true;
+            self[method] = function() {
+                var extra = arguments.length === 1 ? [ method, "" ] : [ method ];
+                self.on.apply(self, extra.concat(Array.prototype.slice.call(arguments)));
+            };
+        })(methods[i]);
+    }
 };
 
 Router.prototype.runlist = function(fns) {
-  var runlist = this.every && this.every.before ? [ this.every.before ].concat(_flatten(fns)) : _flatten(fns);
-  if (this.every && this.every.on) {
-    runlist.push(this.every.on);
-  }
-  runlist.captures = fns.captures;
-  runlist.source = fns.source;
-  return runlist;
+    var runlist = this.every && this.every.before ? [ this.every.before ].concat(_flatten(fns)) : _flatten(fns);
+    if (this.every && this.every.on) {
+        runlist.push(this.every.on);
+    }
+    runlist.captures = fns.captures;
+    runlist.source = fns.source;
+    return runlist;
 };
 
 Router.prototype.mount = function(routes, path) {
-  if (!routes || typeof routes !== "object" || Array.isArray(routes)) {
-    return;
-  }
-  var self = this;
-  path = path || [];
-  function insertOrMount(route, local) {
-    var rename = route, parts = route.split(self.delimiter), routeType = typeof routes[route], isRoute = parts[0] === "" || !self._methods[parts[0]], event = isRoute ? "on" : rename;
-    if (isRoute) {
-      rename = rename.slice(self.delimiter.length);
-      parts.shift();
+    if (!routes || typeof routes !== "object" || Array.isArray(routes)) {
+        return;
     }
-    if (isRoute && routeType === "object" && !Array.isArray(routes[route])) {
-      local = local.concat(parts);
-      self.mount(routes[route], local);
-      return;
+    var self = this;
+    path = path || [];
+    function insertOrMount(route, local) {
+        var rename = route, parts = route.split(self.delimiter), routeType = typeof routes[route], isRoute = parts[0] === "" || !self._methods[parts[0]], event = isRoute ? "on" : rename;
+        if (isRoute) {
+            rename = rename.slice(self.delimiter.length);
+            parts.shift();
+        }
+        if (isRoute && routeType === "object" && !Array.isArray(routes[route])) {
+            local = local.concat(parts);
+            self.mount(routes[route], local);
+            return;
+        }
+        if (isRoute) {
+            local = local.concat(rename.split(self.delimiter));
+        }
+        self.insert(event, local, routes[route]);
     }
-    if (isRoute) {
-      local = local.concat(rename.split(self.delimiter));
+    for (var route in routes) {
+        if (routes.hasOwnProperty(route)) {
+            insertOrMount(route, path.slice(0));
+        }
     }
-    self.insert(event, local, routes[route]);
-  }
-  for (var route in routes) {
-    if (routes.hasOwnProperty(route)) {
-      insertOrMount(route, path.slice(0));
-    }
-  }
 };
 
 
